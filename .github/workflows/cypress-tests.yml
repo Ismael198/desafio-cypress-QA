@@ -1,34 +1,38 @@
-# .github/workflows/cypress-tests.yml
-name: Desafio cypres QA
+name: Cypress Desafio QA
 
-on:
-  push:
-    branches: [ main]
-  pull_request:
-    branches: [ main]
+on: [push, pull_request]
 
 jobs:
-  cypress-run:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
+      - name: Run Cypress tests in sequence
+        run: npm run test:sequence
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          start: npm start
-          wait-on: 'http://lojaebac.ebaconline.art.br/' 
-          config-file: cypress.config.js
-          record: true
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: cypress-reports
+          path: cypress/reports
+          if-no-files-found: ignore
+
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          if-no-files-found: ignore

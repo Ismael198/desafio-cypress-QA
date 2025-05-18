@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "test:login": "cypress run --spec cypress/e2e/login.cy.js",
+    "test:register": "cypress run --spec cypress/e2e/register.cy.js",
+    "test:sequence": "npm run test:login && npm run test:register"
   },
-  "author": "",
+  "author": "Ismael Nunes",
   "license": "ISC",
   "devDependencies": {
     "cypress": "^13.17.0"
